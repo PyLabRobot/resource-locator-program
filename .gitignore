@@ -1,0 +1,9 @@
+.mypy_cache
+.pytest_cache
+*.swp
+*.swo
+*.log
+todo
+Resource_Locator_Program.egg-info
+.DS_Store
+*.pyc

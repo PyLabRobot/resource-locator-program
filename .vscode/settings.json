@@ -1,0 +1,26 @@
+{
+  "editor.tabSize": 2,
+  "files.trimTrailingWhitespace": true,
+  "python.linting.pylintEnabled": true,
+  "python.testing.pytestArgs": ["."],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "python.testing.autoTestDiscoverOnSaveEnabled": true,
+  "editor.rulers": [100],
+  "editor.formatOnSave": true,
+  "files.exclude": {
+    "**/__pycache__": true
+  },
+  "python.testing.unittestArgs": ["-v", "-s", ".", "-p", "*_test.py"],
+  "[markdown]": {
+    "editor.wordWrap": "bounded",
+    "editor.wordWrapColumn": 100
+  },
+  "[restructuredtext]": {
+    "editor.wordWrap": "bounded",
+    "editor.wordWrapColumn": 100
+  },
+  "python.linting.mypyEnabled": true,
+  "python.linting.enabled": true,
+  "mypy.runUsingActiveInterpreter": true
+}
