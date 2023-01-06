@@ -17,7 +17,7 @@ setup(name="Resource Locator Program",
   packages=["resource_locator_program"],
   entry_points={
     "console_scripts": [
-        "resource-locator-program = resource_locator_program.__main__:main"
+        "resource-locator-program = resource_locator_program.app:main"
     ]
   }
 )
