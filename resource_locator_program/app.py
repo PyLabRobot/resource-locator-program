@@ -1,8 +1,9 @@
 from functools import partial
 import logging
 import sys
+import threading
 
-from PyQt6.QtCore import QSize
+from PyQt6.QtCore import QSize, pyqtSignal
 from PyQt6.QtWidgets import (
   QApplication,
   QMainWindow,
@@ -11,6 +12,7 @@ from PyQt6.QtWidgets import (
   QVBoxLayout,
   QWidget,
 )
+import pygamepad
 
 from resource_locator_program.setup_screen import LoadWidget
 from resource_locator_program.resource_locator import ResourceLocatorWidget
@@ -70,6 +72,8 @@ class Window(QMainWindow):
 
 
 class TeachingTools(QWidget):
+  set_location_signal = pyqtSignal(float, float, float) # sync mechanism for gamepad
+
   def __init__(self, lh, parent=None):
     super().__init__(parent=parent)
     self.lh = lh
@@ -99,6 +103,28 @@ class TeachingTools(QWidget):
 
     self.tab_widget.currentChanged.connect(self._tab_changed)
 
+    try:
+      self.gamepad = GamepadListener(
+        set_location_signal=self.set_location_signal,
+        get_controller_disabled=self.get_controller_disabled,
+        get_location=self.get_location)
+      self.set_location_signal.connect(self.set_location_signal_handler)
+      print("Gamepad initialized")
+    except RuntimeError:
+      print("Gamepad not initialized")
+
+  def get_controller_disabled(self):
+    if self.index == 0:
+      return self.location_teacher.get_controller_disabled()
+    elif self.index == 1:
+      return self.path_teacher.get_controller_disabled()
+
+  def get_location(self):
+    if self.index == 0:
+      return self.location_teacher.get_location()
+    elif self.index == 1:
+      return self.path_teacher.get_location()
+
   def _tab_changed(self, index):
     self.index = index
     if index == 0:
@@ -106,11 +132,22 @@ class TeachingTools(QWidget):
     elif index == 1:
       self.path_teacher.start()
 
-  def start(self):
+  def set_location_signal_handler(self, x: float, y: float, z: float):
+    # pyqt does not do optionals, so we use -1 as a flag
+    if x == -1:
+      x = None
+    if y == -1:
+      y = None
+    if z == -1:
+      z = None
+
     if self.index == 0:
-      self.location_teacher.start()
+      self.location_teacher.set_location(x=x, y=y, z=z)
     elif self.index == 1:
-      self.path_teacher.start()
+      self.path_teacher.set_location(x=x, y=y, z=z)
+
+  def start(self):
+    self._tab_changed(0)
 
   def enable_all_tabs(self):
     for i in range(self.tab_widget.count()):
@@ -141,6 +178,68 @@ class TeachingTools(QWidget):
       self.location_teacher.keyReleaseEvent(event)
     else:
       raise ValueError
+
+
+def base(x):
+  if 128 <= x <= 255:
+    return x - 256
+  return x
+
+
+
+class GamepadListener:
+  def __init__(self, set_location_signal, get_controller_disabled, get_location):
+    self.set_location_signal = set_location_signal
+    self.get_controller_disabled = get_controller_disabled
+    self.get_location = get_location
+
+    self.killed = False
+    self.pad = pygamepad.Gamepad()
+    self.thread = threading.Thread(target=self.run, daemon=True)
+    self.thread.start()
+
+  def set_location(self, x=None, y=None, z=None):
+    # pyqt does not do optionals, so we use -1 as a flag
+    # use signal to execute on main thread.
+    self.set_location_signal.emit(x or -1, y or -1, z or -1)
+
+  def run(self):
+    # should execute on gamepad thread.
+    i = 0
+    while not self.killed:
+      self.pad.read_gamepad()
+
+      if self.get_controller_disabled():
+        if self.pad.changed:
+          # TODO: maybe a user warning
+          pass
+        continue
+
+      x = base(self.pad.get_analogR_x())
+      y = self.pad.get_analogR_y() - 128
+
+      if x > 10:
+        dx = x / 128 * 50
+        self.set_location(x=self.get_location().x + dx)
+      elif x < -10:
+        dx = x / 128 * 50
+        self.set_location(x=self.get_location().x + dx)
+
+      if y > 10:
+        dy = y / 128 * 50
+        self.set_location(y=self.get_location().y + dy)
+      elif y < -10:
+        dy = y / 128 * 50
+        self.set_location(y=self.get_location().y + dy)
+
+      z = self.pad.get_analogL_y() - 128
+
+      if z > 10:
+        dz = z / 128 * 25
+        self.set_location(z=self.get_location().z + dz)
+      elif z < -10:
+        dz = z / 128 * 25
+        self.set_location(z=self.get_location().z + dz)
 
 
 def main():

@@ -355,7 +355,7 @@ class PathTeacherWidget(LocationEditor):
       self.set_location(
         x=round(location.x, 1),
         y=round(location.y, 1),
-        z=284.0)
+        z=200.0)
 
       self.picked_up_plate = None
 
@@ -374,6 +374,8 @@ class PathTeacherWidget(LocationEditor):
 
     super().set_location(x=x, y=y, z=z)
 
+    self.controller_disabled = True
+
     try:
       self.lh.backend.move_picked_up_resource(
         location=self._location,
@@ -388,11 +390,12 @@ class PathTeacherWidget(LocationEditor):
         title="Error while moving plate",
         description=str(e),
         details=traceback.format_exc())
-      return
-
-    if x is not None:
-      self.display.set_x(x)
-    if y is not None:
-      self.display.set_y(y)
-    if z is not None:
-      self.display.set_z(z)
+    else:
+      if x is not None:
+        self.display.set_x(x)
+      if y is not None:
+        self.display.set_y(y)
+      if z is not None:
+        self.display.set_z(z)
+    finally:
+      self.controller_disabled = False

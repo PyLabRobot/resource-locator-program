@@ -87,6 +87,7 @@ class LoadWidget(QWidget):
     else:
       self.loading_label.hide()
       self.setup_button.show()
+      self.file_picker.setEnabled(True)
       show_error_alert(
         title="Setup failed.",
         description=str(e),
@@ -128,6 +129,7 @@ class LoadWidget(QWidget):
   def _setup(self):
     self.loading_label.show()
     self.setup_button.hide()
+    self.file_picker.setEnabled(False)
 
     def setup():
       try:

@@ -168,6 +168,8 @@ class ResourceLocatorWidget(LocationEditor):
   def set_location(self, x=None, y=None, z=None):
     super().set_location(x, y, z)
 
+    self.controller_disabled = True
+
     try:
       if x is not None:
         self.lh.backend.move_channel_x(self.lh.backend.num_channels - 1, x)
@@ -184,7 +186,8 @@ class ResourceLocatorWidget(LocationEditor):
         title="Error while moving y axis",
         description=str(e),
         details=traceback.format_exc())
-      return
+    finally:
+      self.controller_disabled = False
 
   def pick_up_tip_a1(self, tip_rack: TipRack):
     tip = tip_rack.get_tip("A1")

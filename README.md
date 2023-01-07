@@ -57,7 +57,9 @@ The path teacher only works on Hamilton STAR. It is used to design complex movem
 
 ### Game controller
 
-_Coming soon!_
+This program can alternatively be controlled using a Logitech F310 game controller (US$10-20). The game controller must be plugged in before "Setup" is clicked.
+
+![Game controller instructions](./.github/plr-rlp-controller.jpg)
 
 ---
 

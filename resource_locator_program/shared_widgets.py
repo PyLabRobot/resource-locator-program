@@ -313,6 +313,9 @@ class LocationEditor(QWidget):
   def move_up(self):
     self.set_location(z=self._location.z + self._d)
 
+  def get_controller_disabled(self):
+    return self.controller_disabled
+
   def keyPressEvent(self, event):
     if self.controller_disabled:
       return
