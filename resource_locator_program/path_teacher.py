@@ -282,6 +282,7 @@ class PathTeacherWidget(LocationEditor):
       get_location=self.get_location,
       put_plate=self.put_plate)
     self.general_layout.addWidget(self.build_path_widget)
+    self.build_path_widget.disable()
 
   def pick_up_plate(self, plate):
     try:
