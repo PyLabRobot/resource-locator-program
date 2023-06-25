@@ -1,3 +1,4 @@
+import asyncio
 import traceback
 
 from PyQt6.QtWidgets import (
@@ -158,7 +159,8 @@ class ResourceLocatorWidget(LocationEditor):
 
     self.general_layout.addWidget(self.mover_group)
 
-    self.unlocated_resources_widget = UnlocatedResourcesWidget(get_location=self.get_location, lh=self.lh)
+    self.unlocated_resources_widget = UnlocatedResourcesWidget(
+      get_location=self.get_location, lh=self.lh)
     self.general_layout.addWidget(self.unlocated_resources_widget)
 
     self.save_button = QPushButton("Save to file")
@@ -172,13 +174,13 @@ class ResourceLocatorWidget(LocationEditor):
 
     try:
       if x is not None:
-        self.lh.backend.move_channel_x(self.lh.backend.num_channels - 1, x)
+        asyncio.run(self.lh.backend.move_channel_x(self.lh.backend.num_channels - 1, x))
         self.display.set_x(x)
       if y is not None:
-        self.lh.backend.move_channel_y(self.lh.backend.num_channels - 1, y)
+        asyncio.run(self.lh.backend.move_channel_y(self.lh.backend.num_channels - 1, y))
         self.display.set_y(y)
       if z is not None:
-        self.lh.backend.move_channel_z(self.lh.backend.num_channels - 1, z)
+        asyncio.run(self.lh.backend.move_channel_z(self.lh.backend.num_channels - 1, z))
         self.display.set_z(z)
     except Exception as e:
       traceback.print_exc()
@@ -194,8 +196,9 @@ class ResourceLocatorWidget(LocationEditor):
 
     try:
       self.tip_racks_widget.start_pick_up_tip_a1()
-      self.lh.pick_up_tips(tip_rack["A1"], use_channels=[self.lh.backend.num_channels - 1])
-    except Exception as e:
+      asyncio.run(
+        self.lh.pick_up_tips(tip_rack["A1"], use_channels=[self.lh.backend.num_channels - 1]))
+    except Exception as e: # pylint: disable=broad-except
       self.tip_racks_widget.pick_up_tip_failed()
       traceback.print_exc()
       show_error_alert(
@@ -220,7 +223,8 @@ class ResourceLocatorWidget(LocationEditor):
   def drop_tip_a1(self, tip_rack: TipRack):
     try:
       self.tip_racks_widget.start_drop_tip_a1()
-      self.lh.drop_tips(tip_rack["A1"], use_channels=[self.lh.backend.num_channels - 1])
+      asyncio.run(
+        self.lh.drop_tips(tip_rack["A1"], use_channels=[self.lh.backend.num_channels - 1]))
     except Exception as e:
       self.tip_racks_widget.drop_tip_failed()
       traceback.print_exc()
@@ -252,7 +256,7 @@ class ResourceLocatorWidget(LocationEditor):
 
   def start(self):
     try:
-      self.lh.backend.prepare_for_manual_channel_operation()
+      asyncio.run(self.lh.backend.prepare_for_manual_channel_operation())
     except Exception as e:
       traceback.print_exc()
       show_error_alert(

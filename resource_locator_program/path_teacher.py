@@ -1,3 +1,4 @@
+import asyncio
 import traceback
 from typing import Optional
 
@@ -286,13 +287,13 @@ class PathTeacherWidget(LocationEditor):
 
   def pick_up_plate(self, plate):
     try:
-      self.lh.backend.pick_up_resource(
+      asyncio.run(self.lh.backend.pick_up_resource(
         resource=plate,
         grip_direction=GripDirection.FRONT,
         pickup_distance_from_top=PICKUP_DISTANCE_FROM_TOP,
         offset=Coordinate.zero(),
-      )
-    except Exception as e:
+      ))
+    except Exception as e: # pylint: disable=broad-except
       print(traceback.format_exc())
       show_error_alert(
         title="An error occurred while picking up plate.",
@@ -327,7 +328,7 @@ class PathTeacherWidget(LocationEditor):
       location = site_or_location
 
     try:
-      self.lh.backend.release_picked_up_resource(
+      asyncio.run(self.lh.backend.release_picked_up_resource(
         resource=self.picked_up_plate,
         location=location,
         offset=Coordinate.zero(),
@@ -335,7 +336,7 @@ class PathTeacherWidget(LocationEditor):
         pickup_distance_from_top=PICKUP_DISTANCE_FROM_TOP,
         minimum_traverse_height_at_beginning_of_a_command=
           int(self._location.z + self.picked_up_plate.get_size_z() / 2) * 10 # "minimum" is scam
-      )
+      ))
     except Exception as e:
       print(traceback.format_exc())
       show_error_alert(
@@ -378,13 +379,13 @@ class PathTeacherWidget(LocationEditor):
     self.controller_disabled = True
 
     try:
-      self.lh.backend.move_picked_up_resource(
+      asyncio.run(self.lh.backend.move_picked_up_resource(
         location=self._location,
         resource=self.picked_up_plate,
         grip_direction=GripDirection.FRONT,
         minimum_traverse_height_at_beginning_of_a_command=
           int(self._location.z + self.picked_up_plate.get_size_z() / 2) * 10 # "minimum" is scam
-      )
+      ))
     except Exception as e:
       traceback.print_exc()
       show_error_alert(

@@ -1,3 +1,4 @@
+import asyncio
 import json
 import os
 import threading
@@ -133,7 +134,7 @@ class LoadWidget(QWidget):
 
     def setup():
       try:
-        self.lh.setup()
+        asyncio.run(self.lh.setup())
       except Exception as e:
         print(traceback.format_exc())
 
