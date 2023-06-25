@@ -7,3 +7,4 @@ todo
 Resource_Locator_Program.egg-info
 .DS_Store
 *.pyc
+dist/*
