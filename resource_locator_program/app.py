@@ -12,7 +12,11 @@ from PyQt6.QtWidgets import (
   QVBoxLayout,
   QWidget,
 )
-import pygamepad
+try:
+  import pygamepad
+  USE_GAMEPAD = True
+except ImportError:
+  USE_GAMEPAD = False
 
 from resource_locator_program.setup_screen import LoadWidget
 from resource_locator_program.resource_locator import ResourceLocatorWidget
@@ -103,15 +107,18 @@ class TeachingTools(QWidget):
 
     self.tab_widget.currentChanged.connect(self._tab_changed)
 
-    try:
-      self.gamepad = GamepadListener(
-        set_location_signal=self.set_location_signal,
-        get_controller_disabled=self.get_controller_disabled,
-        get_location=self.get_location)
-      self.set_location_signal.connect(self.set_location_signal_handler)
-      print("Gamepad initialized")
-    except RuntimeError:
-      print("Gamepad not initialized")
+    if USE_GAMEPAD:
+      try:
+        self.gamepad = GamepadListener(
+          set_location_signal=self.set_location_signal,
+          get_controller_disabled=self.get_controller_disabled,
+          get_location=self.get_location)
+        self.set_location_signal.connect(self.set_location_signal_handler)
+        print("Gamepad initialized")
+      except RuntimeError as e:
+        print("Gamepad initialization error:", e)
+    else:
+      print("WARNING: install the pygamepad library to use a gempad: https://github.com/rickwierenga/python-gamepad")
 
   def get_controller_disabled(self):
     if self.index == 0:
