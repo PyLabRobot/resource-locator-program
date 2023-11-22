@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import (
   QWidget,
 )
 try:
-  import pygamepad
+  from pygamepad.gamepads import Gamepad
   USE_GAMEPAD = True
 except ImportError:
   USE_GAMEPAD = False
@@ -201,7 +201,7 @@ class GamepadListener:
     self.get_location = get_location
 
     self.killed = False
-    self.pad = pygamepad.Gamepad()
+    self.pad = Gamepad()
     self.thread = threading.Thread(target=self.run, daemon=True)
     self.thread.start()
 
