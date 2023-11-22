@@ -287,7 +287,7 @@ class PathTeacherWidget(LocationEditor):
 
   def pick_up_plate(self, plate):
     try:
-      asyncio.run(self.lh.backend.pick_up_resource(
+      asyncio.run(self.lh.backend.iswap_pick_up_resource(
         resource=plate,
         grip_direction=GripDirection.FRONT,
         pickup_distance_from_top=PICKUP_DISTANCE_FROM_TOP,
