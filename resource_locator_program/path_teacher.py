@@ -287,7 +287,7 @@ class PathTeacherWidget(LocationEditor):
 
   def pick_up_plate(self, plate):
     try:
-      asyncio.run(self.lh.backend.pick_up_resource(
+      asyncio.run(self.lh.backend.iswap_pick_up_resource(
         resource=plate,
         grip_direction=GripDirection.FRONT,
         pickup_distance_from_top=PICKUP_DISTANCE_FROM_TOP,
@@ -328,7 +328,7 @@ class PathTeacherWidget(LocationEditor):
       location = site_or_location
 
     try:
-      asyncio.run(self.lh.backend.release_picked_up_resource(
+      asyncio.run(self.lh.backend.iswap_release_picked_up_resource(
         resource=self.picked_up_plate,
         location=location,
         offset=Coordinate.zero(),
@@ -379,7 +379,7 @@ class PathTeacherWidget(LocationEditor):
     self.controller_disabled = True
 
     try:
-      asyncio.run(self.lh.backend.move_picked_up_resource(
+      asyncio.run(self.lh.backend.iswap_move_picked_up_resource(
         location=self._location,
         resource=self.picked_up_plate,
         grip_direction=GripDirection.FRONT,
