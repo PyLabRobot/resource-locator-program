@@ -1,16 +1,8 @@
 # PyLabRobot Resource Locator Program (PLR-RLP)
 
-PyLabRobot Resource Locator Program (PLR-RLP) is a utility program to help you locate labware on a deck and design complex movement operations with iSWAP on Hamilton STAR. It is designed to be used with [the PyLabRobot project](https://github.com/pylabrobot/pylabrobot).
+PyLabRobot Resource Locator Program (PLR-RLP) is a utility program to help you calibrate iSWAP movements on Hamilton STAR (and other robots in the future). It is designed to be used with [PyLabRobot](https://github.com/pylabrobot/pylabrobot).
 
 ## Installation
-
-### Users
-
-```sh
-pip install Resource-Locator-Program
-```
-
-### Development
 
 1. Clone PyLabRobot:
 
@@ -31,40 +23,7 @@ pip install -e .
 
 ## Usage
 
-Start the program with:
-
 ```sh
-resource-locator-program
+python iswap.py
 ```
 
-This will start the program in a new window.
-
-### GUI
-
-Use arrow keys to move the robot. Sometimes, another UI element is focussed and you will have to click a label to unfocus it (open an issue/pr if you have to fix this). You may also use `WASD`. Hold shift on the up/down arrows, `W` or `S`, or when pressing the buttons to move the resource up/down instead of front/back.
-
-#### Resource locator
-
-Resource locator is used to locate unidentified labware on the deck. Pick up a tip and move it to the labware. For plates, move it to the bottom center of well A1. For all other resources, move it to the top of the front left corner.
-
-![Resource locator](./.github/resource-locator.png)
-
-#### Path teacher
-
-The path teacher only works on Hamilton STAR. It is used to design complex movements.
-
-![Path teacher](./.github/path-teacher.png)
-
-### Game controller
-
-This program can alternatively be controlled using a Logitech F310 game controller (US$10-20). The game controller must be plugged in before "Setup" is clicked.
-
-![Game controller instructions](./.github/plr-rlp-controller.jpg)
-
----
-
-Disclaimer: PyLabRobot is not officially endorsed or supported by any robot manufacturer. If you use a firmware driver such as is used here, you do so at your own risk. Usage of a firmware driver may invalidate your warranty. Please contact us with any questions.
-
-Icons by [Feather](https://feathericons.com/).
-
-_Developed for the Sculpting Evolution Group at the MIT Media Lab_
